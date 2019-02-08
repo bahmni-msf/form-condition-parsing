@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "esprima": "^4.0.1",
-    "estraverse": "^4.2.0"
+    "estraverse": "^4.2.0",
+    "sinon": "^7.2.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

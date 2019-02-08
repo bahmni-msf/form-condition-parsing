@@ -14,7 +14,7 @@ describe( "Parse form conditons", () => {
 
         assert.equal( parsedContent[ 0 ].condition, "if selected answers for Concept 1 with length greater than " +
             "or equal to 2" );
-        assert.equal( parsedContent[ 0 ].nestedConditions, undefined );
+        assert.equal( parsedContent[ 0 ].nestedConditions.length, 0 );
         assert.equal( parsedContent[ 0 ].conceptsToHide, "ConceptA" );
     } );
 
@@ -36,10 +36,10 @@ describe( "Parse form conditons", () => {
 
         assert.equal( parsedContent1[ 0 ].condition, "if selected answers for Baseline, Employment within the past" +
             " year is equal to Other" );
-        assert.equal( parsedContent1[ 0 ].nestedConditions, undefined );
+        assert.equal( parsedContent1[ 0 ].nestedConditions.length, 0 );
         assert.equal( parsedContent1[ 0 ].conceptsToShow, "Baseline, Other employment" );
         assert.equal( parsedContent2[ 0 ].condition, "if selected answers for Baseline, Prison is equal to True" );
-        assert.equal( parsedContent2[ 0 ].nestedConditions, undefined );
+        assert.equal( parsedContent2[ 0 ].nestedConditions.length, 0 );
         assert.equal( parsedContent2[ 0 ].conceptsToShow, "Baseline, Is prison past or present" );
     } );
 
@@ -57,10 +57,9 @@ describe( "Parse form conditons", () => {
 
         assert.equal( parsedContent[ 0 ].condition, "if selected answers for Baseline, Employment within the" +
             " past year is equal to Other" );
-        assert.equal( parsedContent[ 0 ].nestedConditions, undefined );
+        assert.equal( parsedContent[ 0 ].nestedConditions.length, 0 );
         assert.equal( parsedContent[ 0 ].conceptsToShow, "Baseline, Other employment" );
         assert.equal( parsedContent[ 1 ].condition, "" );
-        assert.equal( parsedContent[ 1 ].nestedConditions, undefined );
         assert.equal( parsedContent[ 1 ].conceptsToHide[ 0 ], "Concept D" );
         assert.equal( parsedContent[ 1 ].conceptsToHide[ 1 ], "Concept X" );
     } );
