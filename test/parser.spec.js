@@ -55,12 +55,12 @@ describe( "Parse form conditons", () => {
             finaltree = parseContent( content ),
             parsedContent = finaltree[ "Baseline, Employment within the past year" ];
 
-        assert.equal( parsedContent[ 0 ].condition, "if selected answers for Baseline, Employment within the" +
+        assert.equal( parsedContent[ 1 ].condition, "if selected answers for Baseline, Employment within the" +
             " past year is equal to Other" );
-        assert.equal( parsedContent[ 0 ].nestedConditions.length, 0 );
-        assert.equal( parsedContent[ 0 ].conceptsToShow, "Baseline, Other employment" );
-        assert.equal( parsedContent[ 1 ].condition, "" );
-        assert.equal( parsedContent[ 1 ].conceptsToHide[ 0 ], "Concept D" );
-        assert.equal( parsedContent[ 1 ].conceptsToHide[ 1 ], "Concept X" );
+        assert.equal( parsedContent[ 1 ].nestedConditions.length, 0 );
+        assert.equal( parsedContent[ 1 ].conceptsToShow, "Baseline, Other employment" );
+        assert.equal( parsedContent[ 0 ].condition, "" );
+        assert.equal( parsedContent[ 0 ].conceptsToHide[ 0 ], "Concept D" );
+        assert.equal( parsedContent[ 0 ].conceptsToHide[ 1 ], "Concept X" );
     } );
 } );

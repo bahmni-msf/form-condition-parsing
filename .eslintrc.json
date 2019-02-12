@@ -189,10 +189,6 @@
       2,
       "always"
     ],
-    "quote-props": [
-      2,
-      "always"
-    ],
     "quotes": [
       2,
       "double",
@@ -210,10 +206,6 @@
     "space-before-function-paren": [
       2,
       "never"
-    ],
-    "space-in-parens": [
-      2,
-      "always"
     ],
     "space-infix-ops": 2,
     "space-unary-ops": [

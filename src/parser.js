@@ -1,5 +1,5 @@
-import { getParser } from "./ParserFactory";
 import IfStatmentParser from "./IfStatmentParser";
+import Stack from "./stack";
 
 let esprima = require( "esprima" ),
     estraverse = require( "estraverse" );
@@ -29,22 +29,26 @@ export function parseContent( content ) {
 
     filteredAst[ 0 ].expression.right.properties.forEach( ( concept ) => {
         let currentConceptName, parsedDataList = [];
+        let stackOfIfNodes = new Stack();
 
         estraverse.traverse( concept, {
             "enter": function( node ) {
-                let parser = getParser( node.type );
-
                 currentConceptName = concept.key.value;
                 if ( node.type === "VariableDeclaration" ) {
                     parseVariableDeclaration( node, declarations );
                 }
-                if ( parser && node.type === "IfStatement" ) {
-                    parsedDataList.push( new IfStatmentParser().parse( node, declarations ) );
-                    if ( node.alternate && node.alternate.type === "BlockStatement" ) {
-                        let { conceptsToHide, conceptsToShow } = new IfStatmentParser().parseBlock( node.alternate );
+                if (node.type === "IfStatement" ) {
+                    if (stackOfIfNodes.isEmpty()) {
+                        let parsedIfNode = new IfStatmentParser().parse(node, declarations);
 
-                        parsedDataList.push( { conceptsToHide, conceptsToShow, "condition": "" } );
+                        parsedDataList = parsedDataList.concat(parsedIfNode);
                     }
+                    stackOfIfNodes.push(node);
+                }
+            },
+            "leave": function(node) {
+                if (node.type === "IfStatement") {
+                    stackOfIfNodes.pop(node);
                 }
             }
         } );
