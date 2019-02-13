@@ -3,7 +3,14 @@ class MemberExpressionParser {
         let value = declarations[ data.object.name ],
             property = data.property ? data.property.name : "";
 
-        return `${value } with ${property}`;
+        switch (property) {
+            case "indexOf" :
+            case "includes" : property = "contains";
+                break;
+            default : property = `with ${property}`;
+        }
+
+        return `${value } ${property}`;
     }
 }
 

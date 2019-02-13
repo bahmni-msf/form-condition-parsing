@@ -13,6 +13,7 @@
   "dependencies": {
     "esprima": "^4.0.1",
     "estraverse": "^4.2.0",
+    "request": "^2.88.0",
     "sinon": "^7.2.3"
   },
   "devDependencies": {
