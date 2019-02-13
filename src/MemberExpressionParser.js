@@ -10,7 +10,7 @@ class MemberExpressionParser {
             default : property = `with ${property}`;
         }
 
-        return `${value } ${property}`;
+        return `${value} ${property}`;
     }
 }
 
