@@ -14,8 +14,13 @@ function createAst( content ) {
 }
 
 function parseVariableDeclaration( node, declarations ) {
-    if ( node.declarations[ 0 ].init.property ) {
-        declarations[ node.declarations[ 0 ].id.name ] = node.declarations[ 0 ].init.property.value;
+    const initOfDeclarations= node.declarations[ 0 ].init;
+    if (initOfDeclarations ) {
+        if(initOfDeclarations.property)
+            declarations[ node.declarations[ 0 ].id.name ] = node.declarations[ 0 ].init.property.value;
+        else if(initOfDeclarations.value){
+            declarations[ node.declarations[ 0 ].id.name ] = initOfDeclarations.value;
+        }
     }
 }
 
