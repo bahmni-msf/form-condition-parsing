@@ -76,7 +76,7 @@ describe( "parse If Statements", () => {
             declarations = { "conditionConcept": "Concept 1" },
             condition = "if selected answers for Concept 1 with length greater than or equal to 2",
             conceptsToHide = "ConceptA";
-            
+
         const binaryExpressionParserStub = sinon.stub( BinaryExpressionParser.prototype, "parse" )
             .returns( "Concept 1 with length greater than or equal to 2" );
 
@@ -219,7 +219,7 @@ describe( "parse If Statements", () => {
         binaryExpressionParserStub.onCall( 0 ).returns( "Concept 1 with length greater than or equal to 4" );
         binaryExpressionParserStub.onCall( 1 ).returns( "Concept 1 with length greater than or equal to 2" );
         parserFactoryStub.returns( new BinaryExpressionParser() );
-      
+
         const parsedResult = ifStatementParser.parse( data, declarations )[ 0 ];
         const actualNestedConditions = parsedResult.nestedConditions;
 
@@ -3313,7 +3313,7 @@ describe( "parse If Statements", () => {
         binaryExpressionParserStub.onCall( 1 ).returns( "Concept 1 with length greater than or equal to 4" );
         binaryExpressionParserStub.onCall( 2 ).returns( "Concept 1 with length greater than or equal to 2" );
         parserFactoryStub.returns( new BinaryExpressionParser() );
-      
+
         const parsedResult = ifStatementParser.parse( data, declarations );
 
         assert.equal( parsedResult.length, 1 );
@@ -3331,4 +3331,137 @@ describe( "parse If Statements", () => {
         assert.equal( actualNestedConditions[ 2 ].condition, nestedIfondition );
         binaryExpressionParserStub.restore();
     } );
+
+    it("should parse consequent hide and show within a block statement inside if", () => {
+        let data = {
+            "type": "IfStatement",
+            "test": {
+                "type": "BinaryExpression",
+                "operator": ">=",
+                "left": {
+                    "type": "MemberExpression",
+                    "computed": false,
+                    "object": {
+                        "type": "Identifier",
+                        "name": "conditionConcept"
+                    },
+                    "property": {
+                        "type": "Identifier",
+                        "name": "length"
+                    }
+                },
+                "right": {
+                    "type": "Literal",
+                    "value": 2,
+                    "raw": "2"
+                }
+            },
+            "consequent": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                            "type": "CallExpression",
+                            "callee": {
+                                "type": "MemberExpression",
+                                "computed": false,
+                                "object": {
+                                    "type": "MemberExpression",
+                                    "computed": false,
+                                    "object": {
+                                        "type": "Identifier",
+                                        "name": "conditions"
+                                    },
+                                    "property": {
+                                        "type": "Identifier",
+                                        "name": "hide"
+                                    }
+                                },
+                                "property": {
+                                    "type": "Identifier",
+                                    "name": "push"
+                                }
+                            },
+                            "arguments": [
+                                {
+                                    "type": "Literal",
+                                    "value": "Concept A",
+                                    "raw": "\"Concept A\""
+                                },
+                                {
+                                    "type": "Literal",
+                                    "value": "Concept B",
+                                    "raw": "\"Concept B\""
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                            "type": "CallExpression",
+                            "callee": {
+                                "type": "MemberExpression",
+                                "computed": false,
+                                "object": {
+                                    "type": "MemberExpression",
+                                    "computed": false,
+                                    "object": {
+                                        "type": "Identifier",
+                                        "name": "conditions"
+                                    },
+                                    "property": {
+                                        "type": "Identifier",
+                                        "name": "show"
+                                    }
+                                },
+                                "property": {
+                                    "type": "Identifier",
+                                    "name": "push"
+                                }
+                            },
+                            "arguments": [
+                                {
+                                    "type": "Literal",
+                                    "value": "Concept C",
+                                    "raw": "\"Concept C\""
+                                },
+                                {
+                                    "type": "Literal",
+                                    "value": "Concept D",
+                                    "raw": "\"Concept D\""
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "alternate": null
+        };
+        const declarations = { "conditionConcept": "Concept 1" };
+
+        const condition = "if selected answers for Concept 1 with length greater than or equal to 2";
+        const conceptsToHide1 = "Concept A";
+        const conceptsToHide2 = "Concept B";
+        const conceptsToShow1 = "Concept C";
+        const conceptsToShow2 = "Concept D";
+        const binaryExpressionParserStub = sinon.stub(BinaryExpressionParser.prototype, "parse");
+
+        binaryExpressionParserStub.returns( "Concept 1 with length greater than or equal to 2" );
+
+        parserFactoryStub.returns( new BinaryExpressionParser() );
+
+        const parsedResult = ifStatementParser.parse( data, declarations );
+
+        assert.equal( parsedResult.length, 1 );
+
+        assert.equal(parsedResult[ 0 ].condition, condition);
+        assert.equal( parsedResult[ 0 ].conceptsToHide[ 0 ], conceptsToHide1 );
+        assert.equal( parsedResult[ 0 ].conceptsToHide[ 1 ], conceptsToHide2 );
+        assert.equal( parsedResult[ 0 ].conceptsToShow[ 0 ], conceptsToShow1 );
+        assert.equal( parsedResult[ 0 ].conceptsToShow[ 1 ], conceptsToShow2 );
+
+        binaryExpressionParserStub.restore();
+    });
 } );

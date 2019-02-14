@@ -107,8 +107,8 @@ class IfStatementParser {
                 });
             }
         } else {
-            currentNode.conceptsToHide = conceptsToHide;
-            currentNode.conceptsToShow = conceptsToShow;
+            currentNode.conceptsToHide = currentNode.conceptsToHide.concat(conceptsToHide);
+            currentNode.conceptsToShow = currentNode.conceptsToShow.concat(conceptsToShow);
         }
     }
 
