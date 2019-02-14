@@ -25,6 +25,10 @@ class BinaryExpressionParser {
                 case "===":
                     stringValue = "is equal to";
                     break;
+                case "!=" :
+                case "!==":
+                    stringValue = "is not equal to"
+                    break;
                 default:
                     stringValue = "";
             }
