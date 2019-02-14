@@ -7,13 +7,21 @@ import LogicalExpressionParser from "../src/LogicalExpressionParser";
 
 describe( "parse If Statements", () => {
     let ifStatementParser,
-        parserFactoryStub;
+        parserFactoryStub,
+        binaryExpressionParserStub,
+        logicalExpressionParserStub;
 
     beforeEach( () => {
         ifStatementParser = new IfStatementParser();
         parserFactoryStub = sinon.stub( ParserFactory, "getParser" );
+        binaryExpressionParserStub = sinon.stub( BinaryExpressionParser.prototype, "parse" );
+        logicalExpressionParserStub = sinon.stub(LogicalExpressionParser.prototype, "parse");
     } );
-    afterEach( () => parserFactoryStub.restore() );
+    afterEach( () => {
+        parserFactoryStub.restore();
+        binaryExpressionParserStub.restore();
+        logicalExpressionParserStub.restore();
+    } );
 
     it( "should parse single if condition", () => {
         let data = {
@@ -78,14 +86,12 @@ describe( "parse If Statements", () => {
             condition = "if selected answers for Concept 1 with length greater than or equal to 2",
             conceptsToHide = "ConceptA";
 
-        const binaryExpressionParserStub = sinon.stub( BinaryExpressionParser.prototype, "parse" )
-            .returns( "Concept 1 with length greater than or equal to 2" );
+        binaryExpressionParserStub.returns( "Concept 1 with length greater than or equal to 2" );
 
         parserFactoryStub.returns( new BinaryExpressionParser() );
 
         assert.equal( ifStatementParser.parse( data, declarations )[ 0 ].condition, condition );
         assert.equal( ifStatementParser.parse( data, declarations )[ 0 ].conceptsToHide[ 0 ], conceptsToHide );
-        binaryExpressionParserStub.restore();
     } );
 
     it( "should parse nested if conditions", () => {
@@ -214,8 +220,7 @@ describe( "parse If Statements", () => {
             declarations = { "conditionConcept": "Concept 1" },
 
             condition = "if selected answers for Concept 1 with length greater than or equal to 4",
-            conceptsToHide = "ConceptX",
-            binaryExpressionParserStub = sinon.stub( BinaryExpressionParser.prototype, "parse" );
+            conceptsToHide = "ConceptX";
 
         binaryExpressionParserStub.onCall( 0 ).returns( "Concept 1 with length greater than or equal to 4" );
         binaryExpressionParserStub.onCall( 1 ).returns( "Concept 1 with length greater than or equal to 2" );
@@ -227,7 +232,6 @@ describe( "parse If Statements", () => {
         assert.equal( actualNestedConditions.length, 1 );
         assert.equal( actualNestedConditions[ 0 ].conceptsToHide, conceptsToHide );
         assert.equal( actualNestedConditions[ 0 ].condition, condition );
-        binaryExpressionParserStub.restore();
     } );
 
     it( "should parse  if else conditions", () => {
@@ -333,7 +337,6 @@ describe( "parse If Statements", () => {
         const condition = "if selected answers for Concept 1 with length greater than or equal to 2";
         const conceptsToHide = "ConceptA";
         const conceptsToShow = "ConceptB";
-        const binaryExpressionParserStub = sinon.stub(BinaryExpressionParser.prototype, "parse");
 
         binaryExpressionParserStub.onCall(0).returns("Concept 1 with length greater than or equal to 2");
         parserFactoryStub.returns(new BinaryExpressionParser());
@@ -345,7 +348,6 @@ describe( "parse If Statements", () => {
         assert.equal( parsedResult[ 0 ].condition, "" );
         assert.equal( parsedResult[ 1 ].conceptsToHide, conceptsToHide );
         assert.equal( parsedResult[ 1 ].condition, condition );
-        binaryExpressionParserStub.restore();
     } );
 
     it( "should parse  if else if conditions", () => {
@@ -479,7 +481,6 @@ describe( "parse If Statements", () => {
         const elseIfCondition = "if selected answers for Concept 1 with length equal to 2";
         const ifConceptsToHide = "ConceptA";
         const elseIfConceptsToHide = "ConceptT";
-        const binaryExpressionParserStub = sinon.stub(BinaryExpressionParser.prototype, "parse");
 
         binaryExpressionParserStub.onCall(1).returns("Concept 1 with length greater than or equal to 2");
         binaryExpressionParserStub.onCall(0).returns("Concept 1 with length equal to 2");
@@ -492,7 +493,6 @@ describe( "parse If Statements", () => {
         assert.equal( parsedResult[ 0 ].condition, elseIfCondition );
         assert.equal( parsedResult[ 1 ].conceptsToHide, ifConceptsToHide );
         assert.equal( parsedResult[ 1 ].condition, ifCondition );
-        binaryExpressionParserStub.restore();
     } );
 
     it( "should parse  if elseif else conditions", () => {
@@ -1055,7 +1055,6 @@ describe( "parse If Statements", () => {
         const ifConceptsToHide = "ConceptA";
         const elseIfConceptsToShow = "ConceptZ";
         const elseConceptsToShow = "ConceptY";
-        const binaryExpressionParserStub = sinon.stub(BinaryExpressionParser.prototype, "parse");
 
         binaryExpressionParserStub.onCall(1).returns("Concept 1 with length greater than or equal to 2");
         binaryExpressionParserStub.onCall(0).returns("Concept 1 with length equal to 9");
@@ -1070,7 +1069,6 @@ describe( "parse If Statements", () => {
         assert.equal( parsedResult[ 1 ].condition, elseIfCondition );
         assert.equal( parsedResult[ 2 ].conceptsToHide, ifConceptsToHide );
         assert.equal( parsedResult[ 2 ].condition, ifCondition );
-        binaryExpressionParserStub.restore();
     } );
 
     it( "should parse  if elseif elseif conditions", () => {
@@ -1719,7 +1717,6 @@ describe( "parse If Statements", () => {
         const ifConceptsToHide = "ConceptA";
         const elseIfConceptsToShow1 = "ConceptT";
         const elseIfConceptsToShow2 = "ConceptZ";
-        const binaryExpressionParserStub = sinon.stub(BinaryExpressionParser.prototype, "parse");
 
         binaryExpressionParserStub.onCall(2).returns("Concept 1 with length greater than or equal to 2");
         binaryExpressionParserStub.onCall(1).returns("Concept 1 with length equal to 2");
@@ -1735,7 +1732,6 @@ describe( "parse If Statements", () => {
         assert.equal( parsedResult[ 1 ].condition, elseIfCondition1 );
         assert.equal( parsedResult[ 2 ].conceptsToHide, ifConceptsToHide );
         assert.equal( parsedResult[ 2 ].condition, ifCondition );
-        binaryExpressionParserStub.restore();
     } );
 
     it( "should parse  if elseif elseif else conditions", () => {
@@ -2512,7 +2508,6 @@ describe( "parse If Statements", () => {
         const elseIfConceptsToShow1 = "ConceptT";
         const elseIfConceptsToShow2 = "ConceptZ";
         const elseConceptsToShow = "ConceptY";
-        const binaryExpressionParserStub = sinon.stub(BinaryExpressionParser.prototype, "parse");
 
         binaryExpressionParserStub.onCall(2).returns("Concept 1 with length greater than or equal to 2");
         binaryExpressionParserStub.onCall(1).returns("Concept 1 with length equal to 2");
@@ -2530,7 +2525,6 @@ describe( "parse If Statements", () => {
         assert.equal( parsedResult[ 2 ].condition, elseIfCondition1 );
         assert.equal( parsedResult[ 3 ].conceptsToHide, ifConceptsToHide );
         assert.equal( parsedResult[ 3 ].condition, ifCondition );
-        binaryExpressionParserStub.restore();
     } );
 
     it( "should parse if with nested if elseif else conditions", () => {
@@ -3308,7 +3302,6 @@ describe( "parse If Statements", () => {
         const nestedElseIfondition = "if selected answers for Concept 1 with length equal to 2";
         const nestedElseIfConceptsToShow = "ConceptT";
         const nestedElseConceptsToShow = "ConceptX";
-        const binaryExpressionParserStub = sinon.stub(BinaryExpressionParser.prototype, "parse");
 
         binaryExpressionParserStub.onCall( 0 ).returns( "Concept 1 with length equal to 2" );
         binaryExpressionParserStub.onCall( 1 ).returns( "Concept 1 with length greater than or equal to 4" );
@@ -3330,7 +3323,6 @@ describe( "parse If Statements", () => {
         assert.equal( actualNestedConditions[ 1 ].condition, nestedElseIfondition );
         assert.equal( actualNestedConditions[ 2 ].conceptsToHide, nestedIfConceptsToHide );
         assert.equal( actualNestedConditions[ 2 ].condition, nestedIfondition );
-        binaryExpressionParserStub.restore();
     } );
 
     it("should parse consequent hide and show within a block statement inside if", () => {
@@ -3447,7 +3439,6 @@ describe( "parse If Statements", () => {
         const conceptsToHide2 = "Concept B";
         const conceptsToShow1 = "Concept C";
         const conceptsToShow2 = "Concept D";
-        const binaryExpressionParserStub = sinon.stub(BinaryExpressionParser.prototype, "parse");
 
         binaryExpressionParserStub.returns( "Concept 1 with length greater than or equal to 2" );
 
@@ -3463,7 +3454,6 @@ describe( "parse If Statements", () => {
         assert.equal( parsedResult[ 0 ].conceptsToShow[ 0 ], conceptsToShow1 );
         assert.equal( parsedResult[ 0 ].conceptsToShow[ 1 ], conceptsToShow2 );
 
-        binaryExpressionParserStub.restore();
     });
 
     it("should parse if statement with return statement as an object expression containing key as enable ", () => {
@@ -3550,13 +3540,12 @@ describe( "parse If Statements", () => {
                 ]
             }
         };
-        const declarations = { "systolic": "Systolic" , "diastolic" : "Diastolic" };
+        const declarations = { "systolic": "Systolic", "diastolic": "Diastolic" };
 
         const condition = "if selected answers for Systolic or Diastolic";
         const conceptsToHide = "Posture";
         const conceptsToShow = "Posture";
 
-        const logicalExpressionParserStub = sinon.stub(LogicalExpressionParser.prototype, "parse");
 
         logicalExpressionParserStub.returns( "Systolic or Diastolic" );
 
@@ -3568,7 +3557,5 @@ describe( "parse If Statements", () => {
         assert.equal(parsedResult[ 1 ].condition, condition);
         assert.equal( parsedResult[ 1 ].conceptsToShow, conceptsToShow );
         assert.equal( parsedResult[ 0 ].conceptsToHide, conceptsToHide );
-
-        logicalExpressionParserStub.restore();
     });
 } );
