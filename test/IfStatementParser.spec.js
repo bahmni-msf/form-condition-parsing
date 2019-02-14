@@ -3,6 +3,7 @@ import assert from "assert";
 import sinon from "sinon";
 import * as ParserFactory from "../src/ParserFactory";
 import BinaryExpressionParser from "../src/BinaryExpressionParser";
+import LogicalExpressionParser from "../src/LogicalExpressionParser";
 
 describe( "parse If Statements", () => {
     let ifStatementParser,
@@ -3463,5 +3464,111 @@ describe( "parse If Statements", () => {
         assert.equal( parsedResult[ 0 ].conceptsToShow[ 1 ], conceptsToShow2 );
 
         binaryExpressionParserStub.restore();
+    });
+
+    it("should parse if statement with return statement as an object expression containing key as enable ", () => {
+        let data = {
+            "type": "IfStatement",
+            "test": {
+                "type": "LogicalExpression",
+                "operator": "||",
+                "left": {
+                    "type": "Identifier",
+                    "name": "systolic"
+                },
+                "right": {
+                    "type": "Identifier",
+                    "name": "diastolic"
+                }
+            },
+            "consequent": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "ReturnStatement",
+                        "argument": {
+                            "type": "ObjectExpression",
+                            "properties": [
+                                {
+                                    "type": "Property",
+                                    "key": {
+                                        "type": "Identifier",
+                                        "name": "enable"
+                                    },
+                                    "computed": false,
+                                    "value": {
+                                        "type": "ArrayExpression",
+                                        "elements": [
+                                            {
+                                                "type": "Literal",
+                                                "value": "Posture",
+                                                "raw": "\"Posture\""
+                                            }
+                                        ]
+                                    },
+                                    "kind": "init",
+                                    "method": false,
+                                    "shorthand": false
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "alternate": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "ReturnStatement",
+                        "argument": {
+                            "type": "ObjectExpression",
+                            "properties": [
+                                {
+                                    "type": "Property",
+                                    "key": {
+                                        "type": "Identifier",
+                                        "name": "disable"
+                                    },
+                                    "computed": false,
+                                    "value": {
+                                        "type": "ArrayExpression",
+                                        "elements": [
+                                            {
+                                                "type": "Literal",
+                                                "value": "Posture",
+                                                "raw": "\"Posture\""
+                                            }
+                                        ]
+                                    },
+                                    "kind": "init",
+                                    "method": false,
+                                    "shorthand": false
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        };
+        const declarations = { "systolic": "Systolic" , "diastolic" : "Diastolic" };
+
+        const condition = "if selected answers for Systolic or Diastolic";
+        const conceptsToHide = "Posture";
+        const conceptsToShow = "Posture";
+
+        const logicalExpressionParserStub = sinon.stub(LogicalExpressionParser.prototype, "parse");
+
+        logicalExpressionParserStub.returns( "Systolic or Diastolic" );
+
+        parserFactoryStub.returns( new LogicalExpressionParser() );
+
+        const parsedResult = ifStatementParser.parse( data, declarations );
+
+        assert.equal( parsedResult.length, 2 );
+        assert.equal(parsedResult[ 1 ].condition, condition);
+        assert.equal( parsedResult[ 1 ].conceptsToShow, conceptsToShow );
+        assert.equal( parsedResult[ 0 ].conceptsToHide, conceptsToHide );
+
+        logicalExpressionParserStub.restore();
     });
 } );

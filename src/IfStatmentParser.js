@@ -28,6 +28,20 @@ class IfStatementParser {
                 if (node.type === "IfStatement") {
                     this.parseIfStatementBlocks(nodeStack, node, declarations, parsedNodes);
                 }
+                if( node.type === "ReturnStatement" && node.argument.type === "ObjectExpression"){
+                    let currentNode = nodeStack.peek();
+                    let conceptsToHide = [], conceptsToShow = [];
+
+                    node.argument.properties.forEach((property) =>{
+                        if(property.key.name === "enable" || property.key.name === "show"){
+                            property.value.elements.forEach((element) => conceptsToShow.push(element.value));
+                        }else if(property.key.name === "disable" || property.key.name === "hide"){
+                            property.value.elements.forEach((element) => conceptsToHide.push(element.value));
+                        }
+                    });
+
+                    this.addParsedNodesToTree(nodeStack, node, conceptsToHide, conceptsToShow, parsedNodes, currentNode);
+                }
             }
         });
         return parsedNodes;
@@ -89,8 +103,11 @@ class IfStatementParser {
         let conceptsToHide = [], conceptsToShow = [];
 
         this.parseMemeberExpressionConcepts(node, parent, conceptsToHide, conceptsToShow);
+        this.addParsedNodesToTree(nodeStack, node, conceptsToHide, conceptsToShow, parsedNodes, currentNode);
+    }
 
-        let { rootIfParent, rootIfParentIndex } = this.findRootIfParentForAlternate(nodeStack, node);
+    addParsedNodesToTree(nodeStack, node, conceptsToHide, conceptsToShow, parsedNodes, currentNode) {
+        let {rootIfParent, rootIfParentIndex} = this.findRootIfParentForAlternate(nodeStack, node);
 
         if (rootIfParentIndex > 1) {
             let parentNode = rootIfParent;
