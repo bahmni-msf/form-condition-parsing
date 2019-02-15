@@ -3627,9 +3627,9 @@ describe( "parse If Statements", () => {
         literalParserStub.onCall(0).returns("Posture");
         literalParserStub.onCall(1).returns("Posture");
 
-        parserFactoryStub.onCall(0).returns(new LogicalExpressionParser());
+        parserFactoryStub.onCall(0).returns(new LiteralParser());
         parserFactoryStub.onCall(1).returns(new LiteralParser());
-        parserFactoryStub.onCall(2).returns(new LiteralParser());
+        parserFactoryStub.onCall(2).returns(new LogicalExpressionParser());
 
         const parsedResult = ifStatementParser.parse( data, declarations );
 
@@ -6085,7 +6085,7 @@ describe( "parse If Statements", () => {
             "if selected answers for Concept 1 with length equal to 4" );
 
         assert.equal(parsedResult[ 0 ].nestedConditions[ 2 ].condition,
-            `if selected answers for ${conditionForIfInElse}` );
+                `if selected answers for ${conditionForIfInElse}` );
         assert.equal(parsedResult[ 0 ].nestedConditions[ 2 ].conceptsToHide, "ConceptD" );
         assert.equal(parsedResult[ 0 ].nestedConditions[ 2 ].conceptsToShow, "ConceptC" );
 

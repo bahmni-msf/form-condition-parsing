@@ -11,6 +11,7 @@ class IfStatementParser {
     parse( data, declarations) {
         let nodeStack = new Stack();
         let parsedNodes = [];
+        this.declarations = declarations;
 
         estraverse.traverse(data, {
             "enter": (node, parent) => {
@@ -36,9 +37,13 @@ class IfStatementParser {
 
                     node.argument.properties.forEach((property) => {
                         if (property.key.name === "enable" || property.key.name === "show") {
-                            property.value.elements.forEach((element) => conceptsToShow.push(element.value));
+                            property.value.elements.forEach((element) => conceptsToShow.push(
+                                getParser(element.type).parse(element, this.declarations)
+                            ));
                         } else if (property.key.name === "disable" || property.key.name === "hide") {
-                            property.value.elements.forEach((element) => conceptsToHide.push(element.value));
+                            property.value.elements.forEach((element) => conceptsToHide.push(
+                                getParser(element.type).parse(element, this.declarations)
+                            ));
                         }
                     });
 
@@ -137,11 +142,11 @@ class IfStatementParser {
     parseMemeberExpressionConcepts(node, parent, conceptsToHide, conceptsToShow) {
         if (node.object.property.name === "hide" || node.object.property.name === "disable") {
             parent.arguments.forEach((argument) => {
-                conceptsToHide.push(getParser(argument.type).parse(argument));
+                conceptsToHide.push(getParser(argument.type).parse(argument, this.declarations));
             });
         } else if (node.object.property.name === "show" || node.object.property.name === "enable") {
             parent.arguments.forEach((argument) => {
-                conceptsToShow.push(getParser(argument.type).parse(argument));
+                conceptsToShow.push(getParser(argument.type).parse(argument, this.declarations));
             });
         }
     }
