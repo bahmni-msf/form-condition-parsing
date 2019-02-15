@@ -45,7 +45,7 @@ export function parseContent( content ) {
                 }
                 if (node.type === "IfStatement" ) {
                     if (stackOfIfNodes.isEmpty()) {
-                        let parsedIfNode = new IfStatmentParser().parse(node, declarations);
+                        let parsedIfNode = new IfStatmentParser().parse(node, declarations).reverse();
 
                         parsedDataList = parsedDataList.concat(parsedIfNode);
                     }

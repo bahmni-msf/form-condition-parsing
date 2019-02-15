@@ -6085,7 +6085,7 @@ describe( "parse If Statements", () => {
             "if selected answers for Concept 1 with length equal to 4" );
 
         assert.equal(parsedResult[ 0 ].nestedConditions[ 2 ].condition,
-                `if selected answers for ${conditionForIfInElse}` );
+            `if selected answers for ${conditionForIfInElse}` );
         assert.equal(parsedResult[ 0 ].nestedConditions[ 2 ].conceptsToHide, "ConceptD" );
         assert.equal(parsedResult[ 0 ].nestedConditions[ 2 ].conceptsToShow, "ConceptC" );
 

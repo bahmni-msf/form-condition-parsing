@@ -11,6 +11,7 @@ class IfStatementParser {
     parse( data, declarations) {
         let nodeStack = new Stack();
         let parsedNodes = [];
+
         this.declarations = declarations;
 
         estraverse.traverse(data, {
