@@ -4,23 +4,31 @@ import sinon from "sinon";
 import * as ParserFactory from "../src/ParserFactory";
 import BinaryExpressionParser from "../src/BinaryExpressionParser";
 import LogicalExpressionParser from "../src/LogicalExpressionParser";
+import IdentifierParser from "../src/IdentifierParser";
+import LiteralParser from "../src/LiteralParser";
 
 describe( "parse If Statements", () => {
     let ifStatementParser,
         parserFactoryStub,
         binaryExpressionParserStub,
-        logicalExpressionParserStub;
+        logicalExpressionParserStub,
+        identifierParserStub,
+        literalParserStub;
 
     beforeEach( () => {
         ifStatementParser = new IfStatementParser();
         parserFactoryStub = sinon.stub( ParserFactory, "getParser" );
         binaryExpressionParserStub = sinon.stub( BinaryExpressionParser.prototype, "parse" );
         logicalExpressionParserStub = sinon.stub(LogicalExpressionParser.prototype, "parse");
+        identifierParserStub = sinon.stub(IdentifierParser.prototype, "parse");
+        literalParserStub = sinon.stub(LiteralParser.prototype, "parse");
     } );
     afterEach( () => {
         parserFactoryStub.restore();
         binaryExpressionParserStub.restore();
         logicalExpressionParserStub.restore();
+        identifierParserStub.restore();
+        literalParserStub.restore();
     } );
 
     it( "should parse single if condition", () => {
@@ -87,11 +95,15 @@ describe( "parse If Statements", () => {
             conceptsToHide = "ConceptA";
 
         binaryExpressionParserStub.returns( "Concept 1 with length greater than or equal to 2" );
+        literalParserStub.returns("ConceptA");
 
-        parserFactoryStub.returns( new BinaryExpressionParser() );
+        parserFactoryStub.onCall(0).returns( new LiteralParser() );
+        parserFactoryStub.onCall(1).returns( new BinaryExpressionParser() );
 
-        assert.equal( ifStatementParser.parse( data, declarations )[ 0 ].condition, condition );
-        assert.equal( ifStatementParser.parse( data, declarations )[ 0 ].conceptsToHide[ 0 ], conceptsToHide );
+        const parsedResult = ifStatementParser.parse( data, declarations );
+
+        assert.equal( parsedResult[ 0 ].condition, condition );
+        assert.equal( parsedResult[ 0 ].conceptsToHide[ 0 ], conceptsToHide );
     } );
 
     it( "should parse nested if conditions", () => {
@@ -224,7 +236,13 @@ describe( "parse If Statements", () => {
 
         binaryExpressionParserStub.onCall( 0 ).returns( "Concept 1 with length greater than or equal to 4" );
         binaryExpressionParserStub.onCall( 1 ).returns( "Concept 1 with length greater than or equal to 2" );
-        parserFactoryStub.returns( new BinaryExpressionParser() );
+        literalParserStub.onCall(0).returns("ConceptA");
+        literalParserStub.onCall(1).returns("ConceptX");
+
+        parserFactoryStub.onCall(0).returns( new LiteralParser() );
+        parserFactoryStub.onCall(1).returns( new LiteralParser() );
+        parserFactoryStub.onCall(2).returns( new BinaryExpressionParser() );
+        parserFactoryStub.onCall(3).returns( new BinaryExpressionParser() );
 
         const parsedResult = ifStatementParser.parse( data, declarations )[ 0 ];
         const actualNestedConditions = parsedResult.nestedConditions;
@@ -339,7 +357,12 @@ describe( "parse If Statements", () => {
         const conceptsToShow = "ConceptB";
 
         binaryExpressionParserStub.onCall(0).returns("Concept 1 with length greater than or equal to 2");
-        parserFactoryStub.returns(new BinaryExpressionParser());
+        literalParserStub.onCall(0).returns("ConceptA");
+        literalParserStub.onCall(1).returns("ConceptB");
+
+        parserFactoryStub.onCall(0).returns(new LiteralParser());
+        parserFactoryStub.onCall(1).returns(new LiteralParser());
+        parserFactoryStub.onCall(2).returns(new BinaryExpressionParser());
 
         const parsedResult = ifStatementParser.parse(data, declarations);
 
@@ -484,7 +507,13 @@ describe( "parse If Statements", () => {
 
         binaryExpressionParserStub.onCall(1).returns("Concept 1 with length greater than or equal to 2");
         binaryExpressionParserStub.onCall(0).returns("Concept 1 with length equal to 2");
-        parserFactoryStub.returns(new BinaryExpressionParser());
+        literalParserStub.onCall(0).returns("ConceptA");
+        literalParserStub.onCall(1).returns("ConceptT");
+
+        parserFactoryStub.onCall(0).returns(new LiteralParser());
+        parserFactoryStub.onCall(1).returns(new LiteralParser());
+        parserFactoryStub.onCall(2).returns(new BinaryExpressionParser());
+        parserFactoryStub.onCall(3).returns(new BinaryExpressionParser());
 
         const parsedResult = ifStatementParser.parse(data, declarations);
 
@@ -1058,7 +1087,15 @@ describe( "parse If Statements", () => {
 
         binaryExpressionParserStub.onCall(1).returns("Concept 1 with length greater than or equal to 2");
         binaryExpressionParserStub.onCall(0).returns("Concept 1 with length equal to 9");
-        parserFactoryStub.returns(new BinaryExpressionParser());
+        literalParserStub.onCall(0).returns("ConceptA");
+        literalParserStub.onCall(1).returns("ConceptZ");
+        literalParserStub.onCall(2).returns("ConceptY");
+
+        parserFactoryStub.onCall(0).returns(new LiteralParser());
+        parserFactoryStub.onCall(1).returns(new LiteralParser());
+        parserFactoryStub.onCall(2).returns(new LiteralParser());
+        parserFactoryStub.onCall(3).returns(new BinaryExpressionParser());
+        parserFactoryStub.onCall(4).returns(new BinaryExpressionParser());
 
         const parsedResult = ifStatementParser.parse(data, declarations);
 
@@ -1721,7 +1758,16 @@ describe( "parse If Statements", () => {
         binaryExpressionParserStub.onCall(2).returns("Concept 1 with length greater than or equal to 2");
         binaryExpressionParserStub.onCall(1).returns("Concept 1 with length equal to 2");
         binaryExpressionParserStub.onCall(0).returns("Concept 1 with length equal to 9");
-        parserFactoryStub.returns(new BinaryExpressionParser());
+        literalParserStub.onCall(0).returns("ConceptA");
+        literalParserStub.onCall(1).returns("ConceptT");
+        literalParserStub.onCall(2).returns("ConceptZ");
+
+        parserFactoryStub.onCall(0).returns(new LiteralParser());
+        parserFactoryStub.onCall(1).returns(new LiteralParser());
+        parserFactoryStub.onCall(2).returns(new LiteralParser());
+        parserFactoryStub.onCall(3).returns(new BinaryExpressionParser());
+        parserFactoryStub.onCall(4).returns(new BinaryExpressionParser());
+        parserFactoryStub.onCall(5).returns(new BinaryExpressionParser());
 
         const parsedResult = ifStatementParser.parse(data, declarations);
 
@@ -2512,7 +2558,18 @@ describe( "parse If Statements", () => {
         binaryExpressionParserStub.onCall(2).returns("Concept 1 with length greater than or equal to 2");
         binaryExpressionParserStub.onCall(1).returns("Concept 1 with length equal to 2");
         binaryExpressionParserStub.onCall(0).returns("Concept 1 with length equal to 9");
-        parserFactoryStub.returns(new BinaryExpressionParser());
+        literalParserStub.onCall(0).returns("ConceptA");
+        literalParserStub.onCall(1).returns("ConceptT");
+        literalParserStub.onCall(2).returns("ConceptZ");
+        literalParserStub.onCall(3).returns("ConceptY");
+
+        parserFactoryStub.onCall(0).returns(new LiteralParser());
+        parserFactoryStub.onCall(1).returns(new LiteralParser());
+        parserFactoryStub.onCall(2).returns(new LiteralParser());
+        parserFactoryStub.onCall(3).returns(new LiteralParser());
+        parserFactoryStub.onCall(4).returns(new BinaryExpressionParser());
+        parserFactoryStub.onCall(5).returns(new BinaryExpressionParser());
+        parserFactoryStub.onCall(6).returns(new BinaryExpressionParser());
 
         const parsedResult = ifStatementParser.parse(data, declarations);
 
@@ -3306,7 +3363,18 @@ describe( "parse If Statements", () => {
         binaryExpressionParserStub.onCall( 0 ).returns( "Concept 1 with length equal to 2" );
         binaryExpressionParserStub.onCall( 1 ).returns( "Concept 1 with length greater than or equal to 4" );
         binaryExpressionParserStub.onCall( 2 ).returns( "Concept 1 with length greater than or equal to 2" );
-        parserFactoryStub.returns( new BinaryExpressionParser() );
+        literalParserStub.onCall(0).returns("ConceptA");
+        literalParserStub.onCall(1).returns("ConceptB");
+        literalParserStub.onCall(2).returns("ConceptT");
+        literalParserStub.onCall(3).returns("ConceptX");
+
+        parserFactoryStub.onCall(0).returns(new LiteralParser());
+        parserFactoryStub.onCall(1).returns(new LiteralParser());
+        parserFactoryStub.onCall(2).returns(new LiteralParser());
+        parserFactoryStub.onCall(3).returns(new LiteralParser());
+        parserFactoryStub.onCall(4).returns(new BinaryExpressionParser());
+        parserFactoryStub.onCall(5).returns(new BinaryExpressionParser());
+        parserFactoryStub.onCall(6).returns(new BinaryExpressionParser());
 
         const parsedResult = ifStatementParser.parse( data, declarations );
 
@@ -3441,8 +3509,16 @@ describe( "parse If Statements", () => {
         const conceptsToShow2 = "Concept D";
 
         binaryExpressionParserStub.returns( "Concept 1 with length greater than or equal to 2" );
+        literalParserStub.onCall(0).returns("Concept A");
+        literalParserStub.onCall(1).returns("Concept B");
+        literalParserStub.onCall(2).returns("Concept C");
+        literalParserStub.onCall(3).returns("Concept D");
 
-        parserFactoryStub.returns( new BinaryExpressionParser() );
+        parserFactoryStub.onCall(0).returns(new LiteralParser());
+        parserFactoryStub.onCall(1).returns(new LiteralParser());
+        parserFactoryStub.onCall(2).returns(new LiteralParser());
+        parserFactoryStub.onCall(3).returns(new LiteralParser());
+        parserFactoryStub.onCall(4).returns(new BinaryExpressionParser());
 
         const parsedResult = ifStatementParser.parse( data, declarations );
 
@@ -3548,8 +3624,12 @@ describe( "parse If Statements", () => {
 
 
         logicalExpressionParserStub.returns( "Systolic or Diastolic" );
+        literalParserStub.onCall(0).returns("Posture");
+        literalParserStub.onCall(1).returns("Posture");
 
-        parserFactoryStub.returns( new LogicalExpressionParser() );
+        parserFactoryStub.onCall(0).returns(new LogicalExpressionParser());
+        parserFactoryStub.onCall(1).returns(new LiteralParser());
+        parserFactoryStub.onCall(2).returns(new LiteralParser());
 
         const parsedResult = ifStatementParser.parse( data, declarations );
 
@@ -3557,5 +3637,73 @@ describe( "parse If Statements", () => {
         assert.equal(parsedResult[ 1 ].condition, condition);
         assert.equal( parsedResult[ 1 ].conceptsToShow, conceptsToShow );
         assert.equal( parsedResult[ 0 ].conceptsToHide, conceptsToHide );
+    });
+
+    it("should replace variable name in concepts to show and hide", () => {
+        let data = {
+            "type": "IfStatement",
+            "test": {
+                "type": "BinaryExpression",
+                "operator": "!=",
+                "left": {
+                    "type": "Identifier",
+                    "name": "suspectCause"
+                },
+                "right": {
+                    "type": "Literal",
+                    "value": null,
+                    "raw": "null"
+                }
+            },
+            "consequent": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                            "type": "CallExpression",
+                            "callee": {
+                                "type": "MemberExpression",
+                                "computed": false,
+                                "object": {
+                                    "type": "MemberExpression",
+                                    "computed": false,
+                                    "object": {
+                                        "type": "Identifier",
+                                        "name": "conditions"
+                                    },
+                                    "property": {
+                                        "type": "Identifier",
+                                        "name": "enable"
+                                    }
+                                },
+                                "property": {
+                                    "type": "Identifier",
+                                    "name": "push"
+                                }
+                            },
+                            "arguments": [
+                                {
+                                    "type": "Identifier",
+                                    "name": "enOther"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        };
+        const declarations = { "enOther": "EOT, Other reasons for treatment interruption" };
+
+        parserFactoryStub.onCall(0).returns(new IdentifierParser());
+        parserFactoryStub.onCall(1).returns(new BinaryExpressionParser());
+
+        binaryExpressionParserStub.returns("If ConceptA is not equal to null");
+        identifierParserStub.returns("EOT, Other reasons for treatment interruption");
+
+        const parsedResult = ifStatementParser.parse( data, declarations );
+
+        assert.equal(parsedResult.length, 1);
+        assert.equal(parsedResult[ 0 ].conceptsToShow, "EOT, Other reasons for treatment interruption");
     });
 } );
