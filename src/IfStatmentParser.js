@@ -13,8 +13,9 @@ class IfStatementParser {
         let parsedNodes = [];
 
         estraverse.traverse(data, {
-            "enter": (node) => {
-                if ( node.type === "IfStatement" ) {
+            "enter": (node, parent) => {
+                if ( node.type === "IfStatement" || (parent && node.type === "BlockStatement"
+                        && parent.alternate === node) ) {
                     node.nestedConditions = [];
                     node.conceptsToHide = [];
                     node.conceptsToShow = [];
@@ -25,7 +26,8 @@ class IfStatementParser {
                 if ( node.type === "MemberExpression" && node.object && node.object.type === "MemberExpression" ) {
                     this.parseMemberExpressionBlocks(nodeStack, node, parent, parsedNodes);
                 }
-                if (node.type === "IfStatement") {
+                if (node.type === "IfStatement" || (parent && node.type === "BlockStatement"
+                        && parent.alternate === node)) {
                     this.parseIfStatementBlocks(nodeStack, node, declarations, parsedNodes);
                 }
                 if ( node.type === "ReturnStatement" && node.argument.type === "ObjectExpression") {
@@ -52,10 +54,18 @@ class IfStatementParser {
     parseIfStatementBlocks(nodeStack, node, declarations, parsedNodes) {
         let currentNode = nodeStack.pop();
         const stringValue = "if selected answers for ";
-        const testCondition = getParser(node.test.type).parse(node.test, declarations);
-        const condition = `${stringValue}${testCondition}`;
+        let condition;
 
-        currentNode.condition = condition;
+        if (node.type !== "BlockStatement") {
+            const testCondition = getParser(node.test.type).parse(node.test, declarations);
+
+            condition = `${stringValue}${testCondition}`;
+
+            currentNode.condition = condition;
+        } else {
+            currentNode.condition = "";
+            condition = "";
+        }
 
         let parentNode = nodeStack.peek();
 
@@ -114,15 +124,9 @@ class IfStatementParser {
             let parentNode = rootIfParent;
 
             if (parentNode) {
-                this.addAsNestedConditionToParent(parentNode, "", {
-                    conceptsToHide,
-                    conceptsToShow
-                });
+                this.addAsNestedConditionToParent(parentNode, "", currentNode);
             } else {
-                this.addToRootLevelConditions(parsedNodes, "", {
-                    conceptsToHide,
-                    conceptsToShow
-                });
+                this.addToRootLevelConditions(parsedNodes, "", currentNode);
             }
         } else {
             currentNode.conceptsToHide = currentNode.conceptsToHide.concat(conceptsToHide);
