@@ -1,5 +1,5 @@
 import { getParser } from "./ParserFactory";
-import Stack from "./stack";
+import Stack from "../util/stack";
 
 let estraverse = require( "estraverse" );
 

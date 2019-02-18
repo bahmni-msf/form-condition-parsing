@@ -1,5 +1,5 @@
 import IfStatmentParser from "./IfStatmentParser";
-import Stack from "./stack";
+import Stack from "../util/stack";
 
 let esprima = require( "esprima" ),
     estraverse = require( "estraverse" );

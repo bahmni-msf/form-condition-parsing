@@ -1,11 +1,11 @@
-import IfStatementParser from "../src/IfStatmentParser";
+import IfStatementParser from "../../src/parsers/IfStatmentParser";
 import assert from "assert";
 import sinon from "sinon";
-import * as ParserFactory from "../src/ParserFactory";
-import BinaryExpressionParser from "../src/BinaryExpressionParser";
-import LogicalExpressionParser from "../src/LogicalExpressionParser";
-import IdentifierParser from "../src/IdentifierParser";
-import LiteralParser from "../src/LiteralParser";
+import * as ParserFactory from "../../src/parsers/ParserFactory";
+import BinaryExpressionParser from "../../src/parsers/BinaryExpressionParser";
+import LogicalExpressionParser from "../../src/parsers/LogicalExpressionParser";
+import IdentifierParser from "../../src/parsers/IdentifierParser";
+import LiteralParser from "../../src/parsers/LiteralParser";
 
 describe( "parse If Statements", () => {
     let ifStatementParser,

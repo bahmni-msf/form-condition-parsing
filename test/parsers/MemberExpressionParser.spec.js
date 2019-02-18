@@ -1,4 +1,4 @@
-import MemberExpressionParser from "../src/MemberExpressionParser";
+import MemberExpressionParser from "../../src/parsers/MemberExpressionParser";
 import assert from "assert";
 
 describe( "Parse Member Expression", () => {

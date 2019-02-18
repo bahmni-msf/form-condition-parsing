@@ -1,4 +1,4 @@
-import LiteralParser from "../src/LiteralParser";
+import LiteralParser from "../../src/parsers/LiteralParser";
 import assert from "assert";
 
 describe( "Parse Literals", () => {

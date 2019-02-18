@@ -1,4 +1,4 @@
-import { parseContent } from "./parser";
+import { parseContent } from "./parsers/parser";
 import fs from "fs";
 import request from "request";
 

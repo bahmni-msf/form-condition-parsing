@@ -1,5 +1,5 @@
 import assert from "assert";
-import { parseContent } from "../src/parser";
+import { parseContent } from "../../src/parsers/parser";
 
 describe( "Parse form conditons", () => {
     it( "should be able to parse and return the result for a single if statement", () => {

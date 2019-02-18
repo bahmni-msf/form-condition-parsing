@@ -1,10 +1,10 @@
-import BinaryExpressionParser from "../src/BinaryExpressionParser";
+import BinaryExpressionParser from "../../src/parsers/BinaryExpressionParser";
 import assert from "assert";
-import CallExpressionParser from "../src/CallExpressionParser";
-import LiteralParser from "../src/LiteralParser";
+import CallExpressionParser from "../../src/parsers/CallExpressionParser";
+import LiteralParser from "../../src/parsers/LiteralParser";
 import sinon from "sinon";
-import * as ParserFactory from "../src/ParserFactory";
-import MemberExpressionParser from "../src/MemberExpressionParser";
+import * as ParserFactory from "../../src/parsers/ParserFactory";
+import MemberExpressionParser from "../../src/parsers/MemberExpressionParser";
 
 describe("Parse form Binary Expression", () => {
     let binaryExpressionParser, parserFactoryStub, data;

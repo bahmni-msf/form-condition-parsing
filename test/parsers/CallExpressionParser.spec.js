@@ -1,9 +1,9 @@
-import CallExpressionParser from "../src/CallExpressionParser";
-import MemberExpressionParser from "../src/MemberExpressionParser";
-import LiteralParser from "../src/LiteralParser";
+import CallExpressionParser from "../../src/parsers/CallExpressionParser";
+import MemberExpressionParser from "../../src/parsers/MemberExpressionParser";
+import LiteralParser from "../../src/parsers/LiteralParser";
 import assert from "assert";
 import sinon from "sinon";
-import * as ParserFactory from "../src/ParserFactory";
+import * as ParserFactory from "../../src/parsers/ParserFactory";
 
 describe( "Parse Call Expression", () => {
     let callExpressionParser;
