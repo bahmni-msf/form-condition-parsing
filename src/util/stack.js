@@ -16,10 +16,13 @@ export default class Stack {
     }
 
     peek() {
-        return this.items[ this.items.length - 1 ];
+        return this.peekToLevel(1);
     }
 
     peekToLevel(level) {
+        if (this.items.length < level) {
+            return;
+        }
         return this.items[ this.items.length - level ];
     }
 
