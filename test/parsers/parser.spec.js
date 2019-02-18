@@ -67,7 +67,7 @@ describe( "Parse form conditons", () => {
             "FSTG, Outcomes for 1st stage surgical validation");
     });
 
-    it("should call IfStatementParser twice for the 2 root if statements", function() {
+    it("should call IfStatementParser twice for the 2 root if statements", () => {
         const content = "Bahmni.ConceptSet.FormConditions.rules = {\r\n    \"FSTG, Outcomes for 1st stage " +
             "surgical validation\": function(formName, formFieldValues) {\r\n        let conditions = {\r\n      " +
             "      show: [],\r\n            hide: []\r\n        };\r\n        let conditionConcept = " +
