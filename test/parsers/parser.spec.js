@@ -1,5 +1,7 @@
 import assert from "assert";
 import { parseContent } from "../../src/parsers/parser";
+import Logger from "../../src/util/logger";
+import sinon from "sinon";
 
 describe( "Parse form conditons", () => {
     it( "should be able to parse and return the result for a single if statement", () => {
@@ -63,4 +65,42 @@ describe( "Parse form conditons", () => {
         assert.equal( parsedContent[ 1 ].conceptsToHide[ 0 ], "Concept D" );
         assert.equal( parsedContent[ 1 ].conceptsToHide[ 1 ], "Concept X" );
     } );
+
+    describe("Exception Handling", () => {
+        let warnLoggerStub, errorLoggerStub;
+
+        beforeEach(() => {
+            warnLoggerStub = sinon.stub(Logger, "warn");
+            errorLoggerStub = sinon.stub(Logger, "error");
+        });
+        afterEach(() => {
+            warnLoggerStub.restore();
+            errorLoggerStub.restore();
+        });
+        it("should warn when the parsed data is empty", () => {
+            const content = "Bahmni.ConceptSet.FormConditions.rules = {\r\n    \"FSTG, Outcomes for 1st stage " +
+                "surgical validation\": function(formName, formFieldValues) {\r\n        let conditions = {\r\n     " +
+                "       show: [],\r\n            hide: []\r\n        };\r\n        let conditionConcept = " +
+                "formFieldValues[ \"FSTG, Outcomes for 1st stage surgical validation\" ];\r\n        " +
+                "switch (conditionConcept) {\r\n            case \"abc\": break;\r\n            default: break;\r\n" +
+                "        }\r\n        return conditions;\r\n    }\r\n};\r\n";
+
+            parseContent( content );
+
+            assert.equal(warnLoggerStub.called, true);
+        });
+
+        it("should log error when the expression do not have handler", () => {
+            const content = "Bahmni.ConceptSet.FormConditions.rules = {\r\n    \"FSTG, Outcomes for 1st stage " +
+                "surgical validation\": function(formName, formFieldValues) {\r\n        let conditions = {\r\n      " +
+                "      show: [],\r\n            hide: []\r\n        };\r\n        let conditionConcept = " +
+                "formFieldValues[ \"FSTG, Outcomes for 1st stage surgical validation\" ];\r\n        let count= 0;" +
+                "\r\n        if (count-- == 0) {\r\n            \r\n        }\r\n        return conditions;\r\n    " +
+                "}\r\n};\r\n";
+
+            parseContent(content);
+
+            assert.equal(errorLoggerStub.called, true);
+        });
+    });
 } );

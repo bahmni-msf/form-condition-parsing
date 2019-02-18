@@ -1,5 +1,6 @@
 import IfStatmentParser from "./IfStatmentParser";
 import Stack from "../util/stack";
+import Logger from "../util/logger";
 
 let esprima = require( "esprima" ),
     estraverse = require( "estraverse" );
@@ -8,7 +9,7 @@ function createAst( content ) {
     try {
         return esprima.parse( content, { "loc": true } );
     } catch ( e ) {
-        console.error( e.message );
+        Logger.error(e.message);
         return "";
     }
 }
@@ -34,31 +35,39 @@ export function parseContent( content ) {
             && bodyElement.expression.left.property.name === "rules" );
 
     filteredAst[ 0 ].expression.right.properties.forEach( ( concept ) => {
-        let currentConceptName, parsedDataList = [];
+        let currentConceptName = "";
+        let parsedDataList = [];
         let stackOfIfNodes = new Stack();
 
-        estraverse.traverse( concept, {
-            "enter": function( node ) {
-                currentConceptName = concept.key.value;
-                if ( node.type === "VariableDeclaration" ) {
-                    parseVariableDeclaration( node, declarations );
-                }
-                if (node.type === "IfStatement" ) {
-                    if (stackOfIfNodes.isEmpty()) {
-                        let parsedIfNode = new IfStatmentParser().parse(node, declarations);
-
-                        parsedDataList = parsedDataList.concat(parsedIfNode);
+        try {
+            estraverse.traverse(concept, {
+                "enter": function(node) {
+                    currentConceptName = concept.key.value;
+                    if (node.type === "VariableDeclaration") {
+                        parseVariableDeclaration(node, declarations);
                     }
-                    stackOfIfNodes.push(node);
+                    if (node.type === "IfStatement") {
+                        if (stackOfIfNodes.isEmpty()) {
+                            let parsedIfNode = new IfStatmentParser().parse(node, declarations);
+
+                            parsedDataList = parsedDataList.concat(parsedIfNode);
+                        }
+                        stackOfIfNodes.push(node);
+                    }
+                },
+                "leave": function(node) {
+                    if (node.type === "IfStatement") {
+                        stackOfIfNodes.pop(node);
+                    }
                 }
-            },
-            "leave": function(node) {
-                if (node.type === "IfStatement") {
-                    stackOfIfNodes.pop(node);
-                }
+            });
+            finalParsedTree[ currentConceptName ] = parsedDataList;
+            if (parsedDataList.length === 0) {
+                Logger.warn(`"${currentConceptName}" returned empty value.`);
             }
-        } );
-        finalParsedTree[ currentConceptName ] = parsedDataList;
+        } catch (exception) {
+            Logger.error(`"${currentConceptName}" did not parse. Error : ${exception.stack}`);
+        }
     } );
     return finalParsedTree;
 }
