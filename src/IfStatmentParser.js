@@ -53,7 +53,7 @@ class IfStatementParser {
                 }
             }
         });
-        return parsedNodes;
+        return parsedNodes.reverse();
     }
 
 
@@ -92,7 +92,7 @@ class IfStatementParser {
             condition,
             conceptsToHide: currentNode.conceptsToHide,
             conceptsToShow: currentNode.conceptsToShow,
-            nestedConditions: currentNode.nestedConditions
+            nestedConditions: currentNode.nestedConditions.reverse()
         });
     }
 
@@ -101,7 +101,7 @@ class IfStatementParser {
             condition,
             conceptsToHide: currentNode.conceptsToHide,
             conceptsToShow: currentNode.conceptsToShow,
-            nestedConditions: currentNode.nestedConditions
+            nestedConditions: currentNode.nestedConditions.reverse()
         });
     }
 

@@ -367,10 +367,10 @@ describe( "parse If Statements", () => {
         const parsedResult = ifStatementParser.parse(data, declarations);
 
         assert.equal( parsedResult.length, 2 );
-        assert.equal( parsedResult[ 0 ].conceptsToShow, conceptsToShow );
-        assert.equal( parsedResult[ 0 ].condition, "" );
-        assert.equal( parsedResult[ 1 ].conceptsToHide, conceptsToHide );
-        assert.equal( parsedResult[ 1 ].condition, condition );
+        assert.equal( parsedResult[ 0 ].conceptsToHide, conceptsToHide );
+        assert.equal( parsedResult[ 0 ].condition, condition );
+        assert.equal( parsedResult[ 1 ].conceptsToShow, conceptsToShow );
+        assert.equal( parsedResult[ 1 ].condition, "" );
     } );
 
     it( "should parse  if else if conditions", () => {
@@ -518,10 +518,10 @@ describe( "parse If Statements", () => {
         const parsedResult = ifStatementParser.parse(data, declarations);
 
         assert.equal( parsedResult.length, 2 );
-        assert.equal( parsedResult[ 0 ].conceptsToShow, elseIfConceptsToHide );
-        assert.equal( parsedResult[ 0 ].condition, elseIfCondition );
-        assert.equal( parsedResult[ 1 ].conceptsToHide, ifConceptsToHide );
-        assert.equal( parsedResult[ 1 ].condition, ifCondition );
+        assert.equal( parsedResult[ 0 ].conceptsToHide, ifConceptsToHide );
+        assert.equal( parsedResult[ 0 ].condition, ifCondition );
+        assert.equal( parsedResult[ 1 ].conceptsToShow, elseIfConceptsToHide );
+        assert.equal( parsedResult[ 1 ].condition, elseIfCondition );
     } );
 
     it( "should parse  if elseif else conditions", () => {
@@ -1100,12 +1100,12 @@ describe( "parse If Statements", () => {
         const parsedResult = ifStatementParser.parse(data, declarations);
 
         assert.equal( parsedResult.length, 3 );
-        assert.equal( parsedResult[ 0 ].conceptsToShow, elseConceptsToShow );
-        assert.equal( parsedResult[ 0 ].condition, "" );
+        assert.equal( parsedResult[ 0 ].conceptsToHide, ifConceptsToHide );
+        assert.equal( parsedResult[ 0 ].condition, ifCondition );
         assert.equal( parsedResult[ 1 ].conceptsToShow, elseIfConceptsToShow );
         assert.equal( parsedResult[ 1 ].condition, elseIfCondition );
-        assert.equal( parsedResult[ 2 ].conceptsToHide, ifConceptsToHide );
-        assert.equal( parsedResult[ 2 ].condition, ifCondition );
+        assert.equal( parsedResult[ 2 ].conceptsToShow, elseConceptsToShow );
+        assert.equal( parsedResult[ 2 ].condition, "" );
     } );
 
     it( "should parse  if elseif elseif conditions", () => {
@@ -1772,12 +1772,12 @@ describe( "parse If Statements", () => {
         const parsedResult = ifStatementParser.parse(data, declarations);
 
         assert.equal( parsedResult.length, 3 );
-        assert.equal( parsedResult[ 0 ].conceptsToShow, elseIfConceptsToShow2 );
-        assert.equal( parsedResult[ 0 ].condition, elseIfCondition2 );
+        assert.equal( parsedResult[ 0 ].conceptsToHide, ifConceptsToHide );
+        assert.equal( parsedResult[ 0 ].condition, ifCondition );
         assert.equal( parsedResult[ 1 ].conceptsToShow, elseIfConceptsToShow1 );
         assert.equal( parsedResult[ 1 ].condition, elseIfCondition1 );
-        assert.equal( parsedResult[ 2 ].conceptsToHide, ifConceptsToHide );
-        assert.equal( parsedResult[ 2 ].condition, ifCondition );
+        assert.equal( parsedResult[ 2 ].conceptsToShow, elseIfConceptsToShow2 );
+        assert.equal( parsedResult[ 2 ].condition, elseIfCondition2 );
     } );
 
     it( "should parse  if elseif elseif else conditions", () => {
@@ -2574,14 +2574,14 @@ describe( "parse If Statements", () => {
         const parsedResult = ifStatementParser.parse(data, declarations);
 
         assert.equal( parsedResult.length, 4 );
-        assert.equal( parsedResult[ 0 ].conceptsToShow, elseConceptsToShow );
-        assert.equal( parsedResult[ 0 ].condition, "" );
-        assert.equal( parsedResult[ 1 ].conceptsToShow, elseIfConceptsToShow2 );
-        assert.equal( parsedResult[ 1 ].condition, elseIfCondition2 );
-        assert.equal( parsedResult[ 2 ].conceptsToShow, elseIfConceptsToShow1 );
-        assert.equal( parsedResult[ 2 ].condition, elseIfCondition1 );
-        assert.equal( parsedResult[ 3 ].conceptsToHide, ifConceptsToHide );
-        assert.equal( parsedResult[ 3 ].condition, ifCondition );
+        assert.equal( parsedResult[ 0 ].conceptsToHide, ifConceptsToHide );
+        assert.equal( parsedResult[ 0 ].condition, ifCondition );
+        assert.equal( parsedResult[ 1 ].conceptsToShow, elseIfConceptsToShow1 );
+        assert.equal( parsedResult[ 1 ].condition, elseIfCondition1 );
+        assert.equal( parsedResult[ 2 ].conceptsToShow, elseIfConceptsToShow2 );
+        assert.equal( parsedResult[ 2 ].condition, elseIfCondition2 );
+        assert.equal( parsedResult[ 3 ].conceptsToShow, elseConceptsToShow );
+        assert.equal( parsedResult[ 3 ].condition, "" );
     } );
 
     it( "should parse if with nested if elseif else conditions", () => {
@@ -3385,12 +3385,12 @@ describe( "parse If Statements", () => {
         const actualNestedConditions = parsedResult[ 0 ].nestedConditions;
 
         assert.equal( actualNestedConditions.length, 3 );
-        assert.equal( actualNestedConditions[ 0 ].conceptsToShow, nestedElseConceptsToShow );
-        assert.equal( actualNestedConditions[ 0 ].condition, "" );
+        assert.equal( actualNestedConditions[ 0 ].conceptsToHide, nestedIfConceptsToHide );
+        assert.equal( actualNestedConditions[ 0 ].condition, nestedIfondition );
         assert.equal( actualNestedConditions[ 1 ].conceptsToShow, nestedElseIfConceptsToShow );
         assert.equal( actualNestedConditions[ 1 ].condition, nestedElseIfondition );
-        assert.equal( actualNestedConditions[ 2 ].conceptsToHide, nestedIfConceptsToHide );
-        assert.equal( actualNestedConditions[ 2 ].condition, nestedIfondition );
+        assert.equal( actualNestedConditions[ 2 ].conceptsToShow, nestedElseConceptsToShow );
+        assert.equal( actualNestedConditions[ 2 ].condition, "" );
     } );
 
     it("should parse consequent hide and show within a block statement inside if", () => {
@@ -3634,9 +3634,9 @@ describe( "parse If Statements", () => {
         const parsedResult = ifStatementParser.parse( data, declarations );
 
         assert.equal( parsedResult.length, 2 );
-        assert.equal(parsedResult[ 1 ].condition, condition);
-        assert.equal( parsedResult[ 1 ].conceptsToShow, conceptsToShow );
-        assert.equal( parsedResult[ 0 ].conceptsToHide, conceptsToHide );
+        assert.equal(parsedResult[ 0 ].condition, condition);
+        assert.equal( parsedResult[ 0 ].conceptsToShow, conceptsToShow );
+        assert.equal( parsedResult[ 1 ].conceptsToHide, conceptsToHide );
     });
 
     it("should replace variable name in concepts to show and hide", () => {
@@ -4301,16 +4301,16 @@ describe( "parse If Statements", () => {
         const parsedResult = ifStatementParser.parse( data, {} );
 
         assert.equal(parsedResult.length, 2);
-        assert.equal(parsedResult[ 0 ].condition, "");
-        assert.equal(parsedResult[ 0 ].nestedConditions.length, 1);
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 0 ].condition,
+        assert.equal(parsedResult[ 1 ].condition, "");
+        assert.equal(parsedResult[ 1 ].nestedConditions.length, 1);
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 0 ].condition,
             `if selected answers for ${conditionForIfInElse}` );
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 0 ].conceptsToHide, "ConceptD" );
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 0 ].conceptsToShow, "ConceptC" );
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 0 ].conceptsToHide, "ConceptD" );
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 0 ].conceptsToShow, "ConceptC" );
 
-        assert.equal(parsedResult[ 1 ].condition, `if selected answers for ${conditionForIf}` );
-        assert.equal(parsedResult[ 1 ].conceptsToHide[ 0 ], "ConceptA" );
-        assert.equal(parsedResult[ 1 ].conceptsToHide[ 1 ], "ConceptB" );
+        assert.equal(parsedResult[ 0 ].condition, `if selected answers for ${conditionForIf}` );
+        assert.equal(parsedResult[ 0 ].conceptsToHide[ 0 ], "ConceptA" );
+        assert.equal(parsedResult[ 0 ].conceptsToHide[ 1 ], "ConceptB" );
     });
 
     it("should parse if else if inside else ", () => {
@@ -5121,20 +5121,20 @@ describe( "parse If Statements", () => {
         const parsedResult = ifStatementParser.parse( data, {} );
 
         assert.equal(parsedResult.length, 2);
-        assert.equal(parsedResult[ 0 ].condition, "");
-        assert.equal(parsedResult[ 0 ].nestedConditions.length, 2);
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 0 ].conceptsToShow, "ConceptE" );
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 0 ].condition,
-            "if selected answers for Concept 1 with length equal to 4" );
-
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 1 ].condition,
+        assert.equal(parsedResult[ 0 ].condition, `if selected answers for ${conditionForIf}` );
+        assert.equal(parsedResult[ 0 ].conceptsToHide[ 0 ], "ConceptA" );
+        assert.equal(parsedResult[ 0 ].conceptsToHide[ 1 ], "ConceptB" );
+        assert.equal(parsedResult[ 1 ].condition, "");
+        assert.equal(parsedResult[ 1 ].nestedConditions.length, 2);
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 0 ].condition,
             `if selected answers for ${conditionForIfInElse}` );
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 1 ].conceptsToHide, "ConceptD" );
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 1 ].conceptsToShow, "ConceptC" );
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 0 ].conceptsToHide, "ConceptD" );
 
-        assert.equal(parsedResult[ 1 ].condition, `if selected answers for ${conditionForIf}` );
-        assert.equal(parsedResult[ 1 ].conceptsToHide[ 0 ], "ConceptA" );
-        assert.equal(parsedResult[ 1 ].conceptsToHide[ 1 ], "ConceptB" );
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 0 ].conceptsToShow, "ConceptC" );
+
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 1 ].conceptsToShow, "ConceptE" );
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 1 ].condition,
+            "if selected answers for Concept 1 with length equal to 4" );
     });
 
     it("should parse if elseif else inside else", () => {
@@ -6074,24 +6074,24 @@ describe( "parse If Statements", () => {
         const parsedResult = ifStatementParser.parse( data, {} );
 
         assert.equal(parsedResult.length, 2);
-        assert.equal(parsedResult[ 0 ].condition, "");
-        assert.equal(parsedResult[ 0 ].nestedConditions.length, 3);
+        assert.equal(parsedResult[ 0 ].condition, `if selected answers for ${conditionForIf}` );
+        assert.equal(parsedResult[ 0 ].conceptsToHide[ 0 ], "ConceptA" );
+        assert.equal(parsedResult[ 0 ].conceptsToHide[ 1 ], "ConceptB" );
+        assert.equal(parsedResult[ 1 ].condition, "");
 
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 0 ].conceptsToShow, "ConceptF" );
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 0 ].condition, "" );
-
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 1 ].conceptsToShow, "ConceptE" );
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 1 ].condition,
-            "if selected answers for Concept 1 with length equal to 4" );
-
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 2 ].condition,
+        assert.equal(parsedResult[ 1 ].nestedConditions.length, 3);
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 0 ].condition,
             `if selected answers for ${conditionForIfInElse}` );
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 2 ].conceptsToHide, "ConceptD" );
-        assert.equal(parsedResult[ 0 ].nestedConditions[ 2 ].conceptsToShow, "ConceptC" );
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 0 ].conceptsToHide, "ConceptD" );
 
-        assert.equal(parsedResult[ 1 ].condition, `if selected answers for ${conditionForIf}` );
-        assert.equal(parsedResult[ 1 ].conceptsToHide[ 0 ], "ConceptA" );
-        assert.equal(parsedResult[ 1 ].conceptsToHide[ 1 ], "ConceptB" );
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 0 ].conceptsToShow, "ConceptC" );
+
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 1 ].conceptsToShow, "ConceptE" );
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 1 ].condition,
+            "if selected answers for Concept 1 with length equal to 4" );
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 2 ].conceptsToShow, "ConceptF" );
+
+        assert.equal(parsedResult[ 1 ].nestedConditions[ 2 ].condition, "" );
 
     });
 
