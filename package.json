@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --recursive",
-    "build": "babel --presets es2015 -d lib/ src",
+    "build": "babel --presets es2015 -d dist/ src",
     "eslint": "eslint --ext .js ./src ./test"
   },
   "author": "",
