@@ -1,7 +1,7 @@
 {
   "name": "form-condition-parsing",
   "version": "1.0.0",
-  "description": "",
+  "description": "Repository for parsing formConditions",
   "main": "dist/index.js",
   "files": ["dist"],
   "scripts": {
@@ -9,8 +9,8 @@
     "build": "babel --presets es2015 -d dist/ src",
     "eslint": "eslint --ext .js ./src ./test"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "twocpbahmni@thoughtworks.com",
+  "license": "GPL-3.0",
   "dependencies": {
     "esprima": "^4.0.1",
     "estraverse": "^4.2.0",
