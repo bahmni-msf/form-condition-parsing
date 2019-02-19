@@ -1,9 +1,11 @@
 {
-  "name": "form-condition-parsing",
-  "version": "1.0.0",
+  "name": "parse-form-conditions",
+  "version": "0.0.1",
   "description": "Repository for parsing formConditions",
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --recursive",
     "build": "babel --presets es2015 -d dist/ src",
