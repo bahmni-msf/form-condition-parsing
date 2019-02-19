@@ -1,5 +1,6 @@
 import { parseContent } from "./parsers/parser";
 
-export default {
-    parseContent
-};
+export function parseFormConditions(content) {
+    return parseContent(content);
+}
+
