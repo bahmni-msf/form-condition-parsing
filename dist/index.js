@@ -3,9 +3,10 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.parseFormConditions = parseFormConditions;
 
 var _parser = require("./parsers/parser");
 
-exports.default = {
-    parseContent: _parser.parseContent
-};
+function parseFormConditions(content) {
+    return (0, _parser.parseContent)(content);
+}
