@@ -32,7 +32,8 @@ export function parseContent( content ) {
         declarations = {},
         filteredAst = ast.body.filter( ( bodyElement ) => bodyElement.type === "ExpressionStatement"
             && bodyElement.expression.type === "AssignmentExpression"
-            && bodyElement.expression.left.property.name === "rules" );
+            && (bodyElement.expression.left.property.name === "rules"
+                || bodyElement.expression.left.property.name === "rulesOverride"));
 
     filteredAst[ 0 ].expression.right.properties.forEach( ( concept ) => {
         let currentConceptName = "";
