@@ -8,8 +8,10 @@
   ],
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --recursive",
+    "posttest": "eslint --ext .js ./src ./test",
     "build": "babel --presets es2015 -d dist/ src",
-    "eslint": "eslint --ext .js ./src ./test"
+    "eslint": "eslint --ext .js ./src ./test",
+    "publish": "npm publish || true"
   },
   "author": "twocpbahmni@thoughtworks.com",
   "license": "GPL-3.0",
