@@ -8,6 +8,9 @@ class LogicalExpressionParser {
             case "||" :
                 stringValue = "or ";
                 break;
+            case "&&" :
+                stringValue = "and ";
+                break;
             default :
                 stringValue = "";
         }
